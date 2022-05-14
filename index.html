@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<style>
+	html, body, #map{
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	}
+	</style>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
+	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+
+<link rel="stylesheet" href="./Control.OSMGeocoder.css" />
+	<script src="./Control.OSMGeocoder.js"></script>
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	
+	<link rel="stylesheet" href="./l.Control.Locate.css" />
+	<script src="./l.Control.Locate.js"></script>
+	
+	<link rel="stylesheet" href="./Leaflet.GraphicScale.min.css" />
+	<script src="./Leaflet.GraphicScale.js"></script>
+	
+	<script src="./map.geojson.js"></script>
+	<script src="./leaflet-polygon.fillPattern.js"></script>
+	<script src="./powiat.js"></script>
+	<script src="./powiat_granica.js"></script>
+	<script src="./linia.js"></script>
+	<script src="./poligony.js"></script>
+
+	
+
+
+	<style>
+	#places {
+	position : absolute;
+	bottom : 32px;
+	right : 16px;
+	z-index : 1000;
+	display : flex;
+	flex-direction : column
+	}
+	</style>
+	<title>Zajęcia</title>
+  </head>
+  
+  <body>
+	<div id="map"></div>
+	<div id="places">
+
+			<button id="place-1">PumpTruck</button>
+			<button id="place-2">ParkWolnosci</button>
+			<button id="place-3">Stadion</button>
+			<button id="place-4">Osrodek_Sportu_i_Rekreacji</button>
+			<button id="place-5">Kosciol</button>
+			
+
+		</div>
+
+	
+	<script>
+	var icon_church = L.icon({
+    iconUrl: './church.svg',
+    iconSize: [48, 48],
+});
+	var icon_park = L.icon({
+    iconUrl: './park.svg',
+    iconSize: [48, 48],
+});
+var icon_pumptruck = L.icon({
+    iconUrl: './pumptruck.svg',
+    iconSize: [48, 48],
+});
+var icon_Stadium = L.icon({
+    iconUrl: './Stadium.svg',
+    iconSize: [48, 48],
+});
+var icon_Swimming_pool = L.icon({
+    iconUrl: './swimming_pool.svg',
+    iconSize: [48, 48],
+});
+ 
+ var osmLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>',
+       otmLink = '<a href="http://opentopomap.org/">OpenTopoMap</a>';
+        
+   var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+       osmAttrib = '&copy; ' + osmLink + ' Contributors',
+       otmUrl = 'http://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+       otmAttrib = '&copy; '+otmLink+' Contributors';
+  
+   var osmMap = L.tileLayer(osmUrl, {attribution: osmAttrib}),
+       otmMap = L.tileLayer(otmUrl, {attribution: otmAttrib});
+	
+	var map = L.map('map', {
+       layers: [osmMap] // only add one!
+	    }).setView([52.856857, 17.940588],13);
+		
+		function style_park (feature) {
+		if ("park" == feature.properties.id){
+		return {
+		weight: 3,
+		opacity: 1,
+		color: 'green',
+		fill: 'url(./grass.svg)',
+		fillOpacity: 1,
+		
+		};
+		}
+		}
+		
+	
+		
+
+var park = L.geoJson(park, {style: style_park}).addTo(map);
+var powiat = L.geoJson(powiat).addTo(map);
+var powiat_granica = L.geoJson(powiat_granica).addTo(map);
+
+var podklad = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+var marker_Park_Wolnosci = L.marker([52.8579841652768, 17.944525481295432], {icon: icon_park, title: 'Park'}).addTo(map)
+.bindPopup('<h3><b>Park Wolnosci</b></h3> <img src="./park_barcin.jpg" width="400px"/>',
+{maxWidth: 400,
+Minwidth: 50,
+closeButton: true,
+closeOnClock: true,
+className: 'balon'});
+
+var marker_PumpTruck = L.marker([52.85916314398004, 17.9466390619583], {icon: icon_pumptruck, title: 'PumpTruck'}).addTo(map)
+.bindPopup('<h3><b>PumpTruck</b></h3> <img src="./pumptruck_barcin.jfif" width="400px"/>',
+{maxWidth: 400,
+Minwidth: 50,
+closeButton: true,
+closeOnClock: true,
+className: 'balon'});
+
+var marker_Osrodek_Sportu_i_rekreacji = L.marker([52.85485945957308, 17.943519562371804], {icon: icon_Swimming_pool, title: 'Basen'}).addTo(map)
+.bindPopup('<h3><b>Osrodek_Sportu_i_Rekreacji</b></h3> <img src="./Basen.jfif" width="400px"/>',
+{maxWidth: 400,
+Minwidth: 50,
+closeButton: true,
+closeOnClock: true,
+className: 'balon'});
+
+var marker_Stadion = L.marker([52.8551963381093, 17.948883980359433], {icon: icon_Stadium, title: 'Stadion'}).addTo(map)
+.bindPopup('<h3><b>Stadion</b></h3> <img src="./Barcin_stadion.jpg" width="400px"/>',
+{maxWidth: 400,
+Minwidth: 50,
+closeButton: true,
+closeOnClock: true,
+className: 'balon'});
+
+var marker_Kosciol = L.marker([52.85571297835486, 17.939731518416078], {icon: icon_church, title: 'Kosciol'}).addTo(map)
+.bindPopup('<h3><b>Kosciol</b></h3> <img src="./kosciol1.jfif" width="400px"/>',
+{maxWidth: 400,
+Minwidth: 50,
+closeButton: true,
+closeOnClock: true,
+className: 'balon'});
+
+var ikony = L.layerGroup([marker_PumpTruck, marker_Kosciol, marker_Osrodek_Sportu_i_rekreacji, marker_Stadion, marker_Park_Wolnosci]).addTo(map); 
+
+var osmGeocoder = new L.Control.OSMGeocoder();
+
+map.addControl(osmGeocoder);
+
+var graphicScale = L.control.graphicScale({fill: "fill", doubleLine: "true"}).addTo(map);
+
+L.control.locate().addTo(map);
+   var baseLayers = {
+	   "OSM Mapnik": osmMap,
+	   "Topogrophy": otmMap
+	    };
+var overlays = {
+"ikony": ikony
+}
+
+	L.control.layers(baseLayers, overlays).addTo(map);
+	L.geoJSON(linie).addTo(map);
+	L.geoJSON(poligony).addTo(map);
+	
+
+    window.map = map;
+    window.noscale = true;
+    window.rot = 0;
+	
+	
+	</script>
+		<script>
+	let placeData = {
+
+		"place-1": [ 120, 25, [52.85916314398004, 17.9466390619583] ],
+		"place-2": [ -60, 17, [ 52.8579841652768, 17.944525481295432 ] ],
+		"place-3": [ -120, 18, [ 52.8551963381093, 17.948883980359433] ],
+		"place-4": [ 30, 17, [ 52.85485945957308, 17.943519562371804 ] ],
+		"place-5": [ 30, 17, [ 52.85571297835486, 17.939731518416078 ] ],
+	}
+
+
+	function gotoplace(e) {
+
+		let aKey = e.srcElement.id;
+		let someData = placeData[ aKey ];
+
+		
+
+		//window.rot = someData[ 0 ];
+		//window.map.setZoom( someData[ 1 ] );
+		window.map.flyTo( someData[ 2 ], 17 );
+
+	
+
+	}
+	document.getElementById( "place-1" ).onclick = gotoplace;
+	document.getElementById( "place-2" ).onclick = gotoplace;
+	document.getElementById( "place-3" ).onclick = gotoplace;
+	document.getElementById( "place-4" ).onclick = gotoplace;
+	document.getElementById( "place-5" ).onclick = gotoplace;
+	</script>
+  </body>
+  
+</html>
